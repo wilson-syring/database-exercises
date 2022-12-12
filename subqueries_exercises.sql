@@ -14,13 +14,12 @@ WHERE gender = 'F'
   AND emp_no IN (SELECT emp_no FROM dept_manager WHERE to_date = '9999-01-01');
 
 SELECT dept_name AS Department
-FROM departments AS d
-         JOIN dept_emp AS de ON d.dept_no = de.dept_no
-WHERE de.emp_no IN (SELECT emp_no
-                    FROM employees
-                    WHERE gender = 'F'
-                      AND emp_no IN (SELECT emp_no FROM dept_manager WHERE to_date = '9999-01-01'))
-ORDER BY dept_name ASC;
+FROM departments
+WHERE dept_no IN (SELECT dept_no
+                  FROM dept_manager
+                  WHERE curdate() < dept_manager.to_date
+                    AND emp_no in (select emp_no from employees where gender = 'F'));
 
-SELECT first_name, last_name FROM employees
+SELECT first_name, last_name
+FROM employees
 WHERE emp_no = (SELECT emp_no FROM salaries ORDER BY salary DESC LIMIT 1);
